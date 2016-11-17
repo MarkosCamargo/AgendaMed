@@ -35,13 +35,15 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+//        if (android.os.Build.VERSION.SDK_INT > 9) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+//        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-//        }
 
         this.etSenha = (EditText) findViewById(R.id.etSenha);
         this.etUsuario = (EditText) findViewById(R.id.etUsuario);
@@ -72,24 +74,27 @@ public class LoginActivity extends AppCompatActivity {
 
             // teste autenticação web
             JSONObject parametro = new JSONObject();
-            parametro.put("login", "admin");
-            parametro.put("senha", Md5Utils.toMd5("admin"));
+            parametro.put("login", etUsuario.getText().toString());
+            parametro.put("senha", Md5Utils.toMd5(etSenha.getText().toString()));
             System.out.println(parametro.toString());
 
             JSONObject j_resposta = new JSONObject(executePost(baseUrlAuth + "autentica_web", parametro.toString()));
-        System.out.print("DEUUU");
-        } catch (Exception ex ) {
+            System.out.print(j_resposta.toString());
+            try {
+                j_resposta.getString("token");
+                mostrarMensagem("Seja Bem-Vindo!!");
+                Intent intent = new Intent(this, OpcoesActivity.class);
+                finish();
+                startActivity(intent);
+            } catch (Exception ex) {
+                Logger.getLogger(LoginActivity.class.getName()).log(Level.SEVERE, null, ex);
+                mostrarMensagem(j_resposta.getString("mensagem"));
+            }
+
+        } catch (Exception ex) {
             Logger.getLogger(LoginActivity.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (etUsuario.getText().toString().equals("") && etSenha.getText().toString().equals("")) {
-            mostrarMensagem("Seja Bem-Vindo!!");
-            Intent intent = new Intent(this, OpcoesActivity.class);
-            finish();
-            startActivity(intent);
-        } else {
-            mostrarMensagem("Usuário e/ou Senha incorretos!!");
 
-        }
     }
 
     public void mostrarMensagem(String mensagem) {
