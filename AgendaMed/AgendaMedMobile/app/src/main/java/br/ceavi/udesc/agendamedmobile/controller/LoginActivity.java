@@ -12,6 +12,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,7 +60,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void entrar(View v) {
         try {
-            //System.err.println(CryptUtils.decrypt("3VTHC2Ul5HJsGOx4EcICs4HwDHVkuyGjA4vFycCy1N93hTM4cVW4/Rc54z6OUEjnexCL+k/9fVClWdaRHEBUPA=="));
             String baseUrlAuth = "http://agendamedauth.herokuapp.com/";
 
             JSONObject parametro = new JSONObject();
@@ -69,18 +69,19 @@ public class LoginActivity extends AppCompatActivity {
 
             JSONObject j_resposta = new JSONObject(Invoker.executePost(baseUrlAuth + "autentica_web", parametro.toString()));
             System.out.print(j_resposta.toString());
-            try {
-                j_resposta.getString("token");
-                mostrarMensagem("Seja Bem-Vindo, "+etUsuario.getText().toString());
+
+            if (j_resposta.has("token")) {
+                mostrarMensagem("Seja Bem-Vindo, " + etUsuario.getText().toString());
                 Intent intent = new Intent(this, OpcoesActivity.class);
                 finish();
                 startActivity(intent);
-            } catch (JSONException ex) {
-                //Logger.getLogger(LoginActivity.class.getName()).log(Level.SEVERE, null, ex);
+            } else {
                 mostrarMensagem(j_resposta.getString("mensagem"));
             }
-        } catch (Exception ex) {
+        } catch (JSONException ex) {
             Logger.getLogger(LoginActivity.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
 
     }
