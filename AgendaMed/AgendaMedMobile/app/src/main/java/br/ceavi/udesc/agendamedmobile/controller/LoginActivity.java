@@ -60,17 +60,16 @@ public class LoginActivity extends AppCompatActivity {
 
     private void entrar(View v) {
         try {
-            String baseUrlAuth = "http://agendamedauth.herokuapp.com/";
-
             JSONObject parametro = new JSONObject();
             parametro.put("login", etUsuario.getText().toString());
             parametro.put("senha", Md5Utils.toMd5(etSenha.getText().toString()));
             System.out.println(parametro.toString());
 
-            JSONObject j_resposta = new JSONObject(Invoker.executePost(baseUrlAuth + "autentica_web", parametro.toString()));
+            JSONObject j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "autentica_web", parametro.toString()));
             System.out.print(j_resposta.toString());
 
             if (j_resposta.has("token")) {
+                Invoker.token = j_resposta.getString("token");
                 mostrarMensagem("Seja Bem-Vindo, " + etUsuario.getText().toString());
                 Intent intent = new Intent(this, OpcoesActivity.class);
                 finish();
@@ -80,9 +79,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         } catch (JSONException ex) {
             Logger.getLogger(LoginActivity.class.getName()).log(Level.SEVERE, null, ex);
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+        } catch (Exception et) {
+            et.printStackTrace();
+            mostrarMensagem("Você não está conectado a internet!");
         }
+
 
     }
 

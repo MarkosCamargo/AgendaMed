@@ -10,11 +10,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.ceavi.udesc.agendamedmobile.R;
 import br.ceavi.udesc.agendamedmobile.model.PostoSaude;
+import br.ceavi.udesc.agendamedmobile.util.Invoker;
 
 public class PostoActivity extends AppCompatActivity {
     private Button btnBuscar;
@@ -27,6 +32,22 @@ public class PostoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posto);
+        try {
+            JSONObject parametro = new JSONObject();
+            parametro.put("token", Invoker.token);
+            JSONObject j_resposta = new JSONObject(Invoker.executeGet(Invoker.baseUrlAuth + "posto_saude/lista", parametro.toString()));
+            System.out.print(j_resposta.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (NullPointerException ete) {
+            ete.printStackTrace();
+            mostrarMensagem("Não há postos de saúde cadastrados no servidor");
+        } catch (Exception et) {
+            et.printStackTrace();
+            mostrarMensagem("Você não está conectado a internet!");
+        }
 
         postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Ibirama", 32450990));
         postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Rio do Sul", 32450990));

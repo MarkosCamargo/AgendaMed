@@ -14,6 +14,8 @@ import java.net.URLEncoder;
  */
 
 public class Invoker {
+    public static final String baseUrlAuth = "http://agendamedauth.herokuapp.com/";
+    public static String token = "";
 
     public static String executePost(String url, String param) throws UnsupportedEncodingException {
         return execute(HTTPMethod.POST, url, URLEncoder.encode(param, "UTF-8"));
