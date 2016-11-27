@@ -15,7 +15,8 @@ import java.net.URLEncoder;
 
 public class Invoker {
     public static final String baseUrlAuth = "http://agendamedauth.herokuapp.com/";
-    public static String token = "";
+    public static final String baseUrlAgenda = "http://agendamedagenda.herokuapp.com/";
+    public static String token = "3VTHC2Ul5HJsGOx4EcICs4HwDHVkuyGjA4vFycCy1N93hTM4cVW4/Rc54z6OUEjnexCL+k/9fVClWdaRHEBUPA==";
 
     public static String executePost(String url, String param) throws UnsupportedEncodingException {
         return execute(HTTPMethod.POST, url, URLEncoder.encode(param, "UTF-8"));
@@ -33,6 +34,7 @@ public class Invoker {
 
             return getResponse(connection);
         } catch (IOException e) {
+            e.printStackTrace();
             return null;
         } finally {
             if (connection != null) {
@@ -55,6 +57,7 @@ public class Invoker {
 
             return getResponse(connection);
         } catch (IOException e) {
+            e.printStackTrace();
             return null;
         } finally {
             if (connection != null) {

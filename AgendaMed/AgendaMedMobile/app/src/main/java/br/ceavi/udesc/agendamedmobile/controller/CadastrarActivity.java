@@ -8,7 +8,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+
 import br.ceavi.udesc.agendamedmobile.R;
+import br.ceavi.udesc.agendamedmobile.util.Invoker;
+import br.ceavi.udesc.agendamedmobile.util.Md5Utils;
 
 public class CadastrarActivity extends AppCompatActivity {
     private Button btnCriarConta;
@@ -16,9 +23,11 @@ public class CadastrarActivity extends AppCompatActivity {
     private EditText etSenhaCad;
     private EditText etSenha2Cad;
     private EditText etNomeCad;
+    private EditText etNasCad;
     private EditText etSusCad;
     private EditText etEnderecoCad;
     private EditText etUsuarioCad;
+    private EditText etEmailCad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +41,8 @@ public class CadastrarActivity extends AppCompatActivity {
         this.etSusCad = (EditText) findViewById(R.id.etSusCad);
         this.etEnderecoCad = (EditText) findViewById(R.id.etEnderecoCad);
         this.etUsuarioCad = (EditText) findViewById(R.id.etUsuarioCad);
+        this.etEmailCad = (EditText) findViewById(R.id.etEmailCad);
+        this.etNasCad = (EditText) findViewById(R.id.etNasCad);
 
         this.btnCriarConta = (Button) findViewById(R.id.btnCriar);
         this.btnCriarConta.setOnClickListener(new View.OnClickListener() {
@@ -47,9 +58,50 @@ public class CadastrarActivity extends AppCompatActivity {
             mostrarMensagem("Existem Campos em branco!");
         } else {
             if (etSenhaCad.getText().toString().equals(etSenha2Cad.getText().toString())) {
-                //Criar Usuario ou Paciente
+                // criando usuario
+                JSONObject parametro = new JSONObject();
+                try {
+                    parametro.put("login", etUsuarioCad.getText().toString());
+                    // a senha deve ser enviada criptografada (md5 de preferência)
+                    parametro.put("senha", Md5Utils.toMd5(etSenhaCad.getText().toString()));
+                    parametro.put("mobile", "true");
+                    parametro.put("email", etEmailCad.getText().toString());
+                    // sucesso se login não existir
+                    JSONObject j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "cria_usuario", parametro.toString()));
+                    String resposta = j_resposta.getString("mensagem");
+                    int id = j_resposta.getInt("id_usuario");
 
-                mostrarMensagem("Conta criada com sucesso!");
+
+                    mostrarMensagem(resposta);
+
+
+                    //Criando o Paciente
+                    parametro = new JSONObject();
+                    //Criando o Endereco
+                    JSONObject parametroEndereco = new JSONObject();
+
+                    parametroEndereco.put("id", 0);
+                    parametroEndereco.put("descricao", etEnderecoCad.getText().toString());
+                    parametroEndereco.put("latitude", 0);
+                    parametroEndereco.put("longitude", 0);
+
+                    parametro.put("descricao", etNomeCad.getText().toString());
+                    parametro.put("numero_sus", etSusCad.getText().toString());
+                    parametro.put("id_usuario", id);
+                    parametro.put("endereco", parametroEndereco);
+                    parametro.put("nascimento", etNasCad.getText().toString());
+
+
+
+                    j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "paciente/insere", parametro.toString()));
+
+
+                    mostrarMensagem(j_resposta.getString("mensagem"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 Intent intent = new Intent(this, LoginActivity.class);
                 finish();
                 startActivity(intent);

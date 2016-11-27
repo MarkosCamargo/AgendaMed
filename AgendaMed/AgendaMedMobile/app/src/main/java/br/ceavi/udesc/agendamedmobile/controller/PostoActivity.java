@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ceavi.udesc.agendamedmobile.R;
+import br.ceavi.udesc.agendamedmobile.model.Endereco;
 import br.ceavi.udesc.agendamedmobile.model.PostoSaude;
 import br.ceavi.udesc.agendamedmobile.util.Invoker;
 
@@ -34,9 +36,21 @@ public class PostoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_posto);
         try {
             JSONObject parametro = new JSONObject();
+
             parametro.put("token", Invoker.token);
-            JSONObject j_resposta = new JSONObject(Invoker.executeGet(Invoker.baseUrlAuth + "posto_saude/lista", parametro.toString()));
-            System.out.print(j_resposta.toString());
+            JSONObject j_resposta = new JSONObject(Invoker.executeGet(Invoker.baseUrlAgenda + "posto_saude/lista", parametro.toString()));
+            System.out.println(j_resposta.toString());
+            JSONArray j = j_resposta.getJSONArray("itens");
+
+            for (int i = 0; i < j.length(); i++) {
+                if (j.getJSONObject(i).has("endereco")) {
+                    JSONObject j_endereco = j.getJSONObject(i).getJSONObject("endereco");
+                    //                                                Endereco(String descricao, int id, double latitude, double longitude) {
+                    postos.add(new PostoSaude(j.getJSONObject(i).getLong("cnpj"), j.getJSONObject(i).getInt("id"), j.getJSONObject(i).getString("nome"), new Endereco(j_endereco.getString("descricao"),j_endereco.getInt("id"), j_endereco.getDouble("latitude"),j_endereco.getDouble("longitude"))));
+                }else{
+                    postos.add(new PostoSaude(j.getJSONObject(i).getLong("cnpj"), j.getJSONObject(i).getInt("id"), j.getJSONObject(i).getString("nome"), null));
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -49,11 +63,11 @@ public class PostoActivity extends AppCompatActivity {
             mostrarMensagem("Você não está conectado a internet!");
         }
 
-        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Ibirama", 32450990));
-        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Rio do Sul", 32450990));
-        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Pomerode", 32450990));
-        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Curitibanos", 32450990));
-        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Ascurra", 32450990));
+//        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Ibirama", 32450990));
+//        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Rio do Sul", 32450990));
+//        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Pomerode", 32450990));
+//        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Curitibanos", 32450990));
+//        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Ascurra", 32450990));
 
         this.etPosto = (EditText) findViewById(R.id.etNomePosto);
         this.btnBuscar = (Button) findViewById(R.id.btnBuscarPosto);

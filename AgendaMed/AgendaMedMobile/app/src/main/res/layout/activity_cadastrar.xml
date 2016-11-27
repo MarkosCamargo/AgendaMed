@@ -47,16 +47,6 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:hint="Número Sus"
-        android:id="@+id/etSusCad"
-        android:layout_below="@+id/etEnderecoCad"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
         android:hint="Usuário"
         android:id="@+id/etUsuarioCad"
         android:layout_below="@+id/etSusCad"
@@ -83,11 +73,41 @@
         android:layout_alignParentStart="true" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
         app:srcCompat="@drawable/logoapp"
         android:id="@+id/imageView3"
+        android:layout_marginBottom="11dp"
+        android:layout_above="@+id/btnCriar"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:hint="Email"
+        android:id="@+id/etEmailCad"
         android:layout_below="@+id/etSenha2Cad"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:hint="Data Nascimento"
+        android:id="@+id/etNasCad"
+        android:layout_below="@+id/etEnderecoCad"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:hint="Número Sus"
+        android:id="@+id/etSusCad"
+        android:layout_below="@+id/etNasCad"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

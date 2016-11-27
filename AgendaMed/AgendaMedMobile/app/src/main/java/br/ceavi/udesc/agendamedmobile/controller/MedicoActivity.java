@@ -18,6 +18,7 @@ public class MedicoActivity extends AppCompatActivity {
     private ListView listViewMedicos;
     private Button btnAgendar;
     private List<Medico> medicos = new ArrayList<>();
+    //desconsiderar
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

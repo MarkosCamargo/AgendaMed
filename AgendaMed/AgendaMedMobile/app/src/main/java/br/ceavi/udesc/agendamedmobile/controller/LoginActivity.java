@@ -63,13 +63,13 @@ public class LoginActivity extends AppCompatActivity {
             JSONObject parametro = new JSONObject();
             parametro.put("login", etUsuario.getText().toString());
             parametro.put("senha", Md5Utils.toMd5(etSenha.getText().toString()));
-            System.out.println(parametro.toString());
+            //System.out.println(parametro.toString());
 
-            JSONObject j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "autentica_web", parametro.toString()));
-            System.out.print(j_resposta.toString());
+            JSONObject j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "autentica_mobile", parametro.toString()));
+            System.out.println(j_resposta.toString());
 
             if (j_resposta.has("token")) {
-                Invoker.token = j_resposta.getString("token");
+                Invoker.token = j_resposta.getString("token"); //nao colocar esse token pois ele é diferente do modulo web
                 mostrarMensagem("Seja Bem-Vindo, " + etUsuario.getText().toString());
                 Intent intent = new Intent(this, OpcoesActivity.class);
                 finish();
