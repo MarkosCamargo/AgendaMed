@@ -7,9 +7,9 @@ package br.ceavi.udesc.agendamedmobile.model;
 public class PostoSaude {
     private int id;
     private long cnpj;
-//    private String email;
+    //    private String email;
     private String nome;
-//    private int telefone;
+    //    private int telefone;
     private Endereco endereco;
 
     public PostoSaude(long cnpj, int id, String nome, Endereco endereco) {
@@ -19,6 +19,14 @@ public class PostoSaude {
         this.nome = nome;
 //        this.telefone = telefone;
         this.endereco = endereco;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNome() {

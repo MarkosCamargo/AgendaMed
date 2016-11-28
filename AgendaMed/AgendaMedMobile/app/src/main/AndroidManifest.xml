@@ -22,7 +22,8 @@
         <activity android:name=".controller.MedicoActivity" />
         <activity android:name=".controller.OpcoesActivity" />
         <activity android:name=".controller.CancelarAgendamentoActivity" />
-        <activity android:name=".controller.HistoricoActivity"></activity>
+        <activity android:name=".controller.HistoricoActivity" />
+        <activity android:name=".controller.AgendamentoActivity"></activity>
     </application>
 
 </manifest>

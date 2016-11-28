@@ -1,5 +1,8 @@
 package br.ceavi.udesc.agendamedmobile.controller;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -29,6 +32,8 @@ public class PostoActivity extends AppCompatActivity {
     private ListView lvPostos;
     public List<PostoSaude> postos = new ArrayList<>();
     private ArrayAdapter<PostoSaude> adapter;
+    AlertDialog.Builder dialog = null;
+    int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +43,7 @@ public class PostoActivity extends AppCompatActivity {
             JSONObject parametro = new JSONObject();
 
             parametro.put("token", Invoker.token);
-            JSONObject j_resposta = new JSONObject(Invoker.executeGet(Invoker.baseUrlAgenda + "posto_saude/lista", parametro.toString()));
+            JSONObject j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "posto_saude/lista", parametro.toString()));
             System.out.println(j_resposta.toString());
             JSONArray j = j_resposta.getJSONArray("itens");
 
@@ -63,12 +68,6 @@ public class PostoActivity extends AppCompatActivity {
             mostrarMensagem("Você não está conectado a internet!");
         }
 
-//        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Ibirama", 32450990));
-//        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Rio do Sul", 32450990));
-//        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Pomerode", 32450990));
-//        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Curitibanos", 32450990));
-//        postos.add(new PostoSaude("100.111.111.11/1", "email@email.com", 1, "Posto de Saúde Ascurra", 32450990));
-
         this.etPosto = (EditText) findViewById(R.id.etNomePosto);
         this.btnBuscar = (Button) findViewById(R.id.btnBuscarPosto);
         this.lvPostos = (ListView) findViewById(R.id.lvPosto);
@@ -79,10 +78,12 @@ public class PostoActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PostoSaude dis = (PostoSaude) lvPostos.getItemAtPosition(position);
-                mostrarMensagem(dis.getNome() + " Selecionado");
+                mostrarMensagem(dis.getNome() +", ID: " +dis.getId() + " Selecionado");
 
                 //exibir uma dialog se o paciente quer procurar os medicos pelo nome ou pelas especialiades
                 //mostrar os medicos deste posto para o paciente para realizar um agendamento
+                PostoActivity.this.id = dis.getId();
+                criaDialog(view);
             }
         });
 
@@ -94,6 +95,32 @@ public class PostoActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void criaDialog(View view) {
+        dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Aviso");
+        dialog.setMessage("Que maneira deseja agendar?");
+        dialog.setNegativeButton("Por Médicos", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(PostoActivity.this, MedicoActivity.class);
+                //finish();
+                intent.putExtra("postoID", id);
+                startActivity(intent);
+            }
+        });
+        dialog.setPositiveButton("Por Especialidades", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mostrarMensagem("Implementar isso!!");
+
+            }
+        });
+        dialog.setCancelable(false);
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.create();
+        dialog.show();
     }
 
     private void mostrarMensagem(String msg) {

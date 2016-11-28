@@ -69,7 +69,8 @@ public class LoginActivity extends AppCompatActivity {
             System.out.println(j_resposta.toString());
 
             if (j_resposta.has("token")) {
-                Invoker.token = j_resposta.getString("token"); //nao colocar esse token pois ele é diferente do modulo web
+                Invoker.token = j_resposta.getString("token");
+                Invoker.id = j_resposta.getInt("id");
                 mostrarMensagem("Seja Bem-Vindo, " + etUsuario.getText().toString());
                 Intent intent = new Intent(this, OpcoesActivity.class);
                 finish();
