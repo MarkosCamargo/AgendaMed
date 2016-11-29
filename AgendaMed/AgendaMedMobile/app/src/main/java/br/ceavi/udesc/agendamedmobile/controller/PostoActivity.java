@@ -23,6 +23,7 @@ import java.util.List;
 
 import br.ceavi.udesc.agendamedmobile.R;
 import br.ceavi.udesc.agendamedmobile.model.Endereco;
+import br.ceavi.udesc.agendamedmobile.model.Especialidade;
 import br.ceavi.udesc.agendamedmobile.model.PostoSaude;
 import br.ceavi.udesc.agendamedmobile.util.Invoker;
 
@@ -113,7 +114,12 @@ public class PostoActivity extends AppCompatActivity {
         dialog.setPositiveButton("Por Especialidades", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mostrarMensagem("Implementar isso!!");
+                Intent intent = new Intent(PostoActivity.this, EspecialidadeActivity.class);
+                //finish();
+                intent.putExtra("postoID", id);
+                startActivity(intent);
+
+                // mostrarMensagem("Implementar isso!!");
 
             }
         });

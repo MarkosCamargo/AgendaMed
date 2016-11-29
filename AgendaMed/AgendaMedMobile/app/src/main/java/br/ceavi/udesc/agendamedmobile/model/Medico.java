@@ -29,6 +29,14 @@ public class Medico {
         this.id = id;
     }
 
+    public List<Especialidade> getEspecialidades() {
+        return especialidades;
+    }
+
+    public void setEspecialidades(List<Especialidade> especialidades) {
+        this.especialidades = especialidades;
+    }
+
     @Override
     public String toString() {
         return nome;
