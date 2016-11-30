@@ -80,4 +80,13 @@ public class Agenda {
         this.situacao = SituacaoAgenda.getSituacaoAgenda(situacao);
     }
 
+    @Override
+    public String toString() {
+        return "id: " + id +
+                ", data: " + data +
+                ", horário: " + horario.toString() +
+                ", paciente: " + paciente.toString() +
+                ", hora: " + hora +
+                ", situação: " + situacao;
+    }
 }

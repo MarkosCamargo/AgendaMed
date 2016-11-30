@@ -68,35 +68,34 @@ public class CadastrarActivity extends AppCompatActivity {
                     parametro.put("email", etEmailCad.getText().toString());
                     // sucesso se login não existir
                     JSONObject j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "cria_usuario", parametro.toString()));
-                    String resposta = j_resposta.getString("mensagem");
-                    int id = j_resposta.getInt("id_usuario");
+                    //tring resposta =
+                    if(j_resposta.has("id_usuario")) {
+                        int id = j_resposta.getInt("id_usuario");
+
+                        //Criando o Paciente
+                        parametro = new JSONObject();
+                        //Criando o Endereco
+                        JSONObject parametroEndereco = new JSONObject();
+
+                        parametroEndereco.put("id", 0);
+                        parametroEndereco.put("descricao", etEnderecoCad.getText().toString());
+                        parametroEndereco.put("latitude", 0);
+                        parametroEndereco.put("longitude", 0);
+
+                        parametro.put("descricao", etNomeCad.getText().toString());
+                        parametro.put("numero_sus", etSusCad.getText().toString());
+                        parametro.put("id_usuario", id);
+                        parametro.put("endereco", parametroEndereco);
+                        parametro.put("nascimento", etNasCad.getText().toString());
 
 
-                    mostrarMensagem(resposta);
+                        j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "paciente/insere", parametro.toString()));
 
 
-                    //Criando o Paciente
-                    parametro = new JSONObject();
-                    //Criando o Endereco
-                    JSONObject parametroEndereco = new JSONObject();
-
-                    parametroEndereco.put("id", 0);
-                    parametroEndereco.put("descricao", etEnderecoCad.getText().toString());
-                    parametroEndereco.put("latitude", 0);
-                    parametroEndereco.put("longitude", 0);
-
-                    parametro.put("descricao", etNomeCad.getText().toString());
-                    parametro.put("numero_sus", etSusCad.getText().toString());
-                    parametro.put("id_usuario", id);
-                    parametro.put("endereco", parametroEndereco);
-                    parametro.put("nascimento", etNasCad.getText().toString());
-
-
-
-                    j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "paciente/insere", parametro.toString()));
-
-
-                    mostrarMensagem(j_resposta.getString("mensagem"));
+                        mostrarMensagem(j_resposta.toString());
+                    }else{
+                        mostrarMensagem(j_resposta.toString());
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException e) {

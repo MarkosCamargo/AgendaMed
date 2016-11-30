@@ -103,7 +103,12 @@ public class MedicoActivity extends AppCompatActivity {
         dialog.setNegativeButton("Por Data", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mostrarMensagem("Implementar isso!!");
+//                mostrarMensagem("Implementar isso!!");
+                Intent intent = new Intent(MedicoActivity.this, AgendamentoDataActivity.class);
+                //finish();
+                intent.putExtra("medicoID", idMedico);
+                startActivity(intent);
+
 
             }
         });

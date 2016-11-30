@@ -12,8 +12,11 @@ public class Paciente {
     private String nome;
     private int numeroSus;
     private int telefone;
-    private byte[] foto;
+    //private byte[] foto;
     private Endereco endereco;
 
-
+    @Override
+    public String toString() {
+        return nome;
+    }
 }

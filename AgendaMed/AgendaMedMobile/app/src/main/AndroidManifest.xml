@@ -24,7 +24,8 @@
         <activity android:name=".controller.CancelarAgendamentoActivity" />
         <activity android:name=".controller.HistoricoActivity" />
         <activity android:name=".controller.AgendamentoActivity" />
-        <activity android:name=".controller.EspecialidadeActivity"></activity>
+        <activity android:name=".controller.EspecialidadeActivity" />
+        <activity android:name=".controller.AgendamentoDataActivity"></activity>
     </application>
 
 </manifest>

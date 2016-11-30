@@ -9,4 +9,12 @@ public class Horario {
     private String horaFinal;
     private String horaInicio;
     private String tempoMedio;
+
+
+    @Override
+    public String toString() {
+        return
+                "Dia Semana: " + diaSemana+
+                ", Horário: '" + horaInicio + " - "+ horaFinal ;
+    }
 }
