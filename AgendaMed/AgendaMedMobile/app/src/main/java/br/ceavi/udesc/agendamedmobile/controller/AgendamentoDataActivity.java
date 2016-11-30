@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ceavi.udesc.agendamedmobile.R;
+import br.ceavi.udesc.agendamedmobile.model.PostoSaude;
 import br.ceavi.udesc.agendamedmobile.util.Invoker;
 
 public class AgendamentoDataActivity extends AppCompatActivity {
     private ListView lvDatas;
     private EditText etDataVerificar;
     private Button btnBuscarDisponibilidade;
+    private ArrayAdapter<String> adapter;
     private List<String> datas = new ArrayList<>();
     int idHorario;
     int medicoID = 0;
@@ -77,28 +79,13 @@ public class AgendamentoDataActivity extends AppCompatActivity {
         this.btnBuscarDisponibilidade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject parametro = new JSONObject();
-                JSONObject j_resposta = new JSONObject();
-
-                parametro = new JSONObject();
-
-                try {
-                    parametro.put("token", Invoker.token);
-
-                    parametro.put("id_medico", medicoID);
-                    parametro.put("data_inicio", etDataVerificar.getText().toString());// Ex: 2016-11-28
-                    j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/disponibilidade", parametro.toString()));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                buscar(v);
             }
         });
 
         this.lvDatas = (ListView) findViewById(R.id.lvDates);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, datas);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, datas);
         this.lvDatas.setAdapter(adapter);
         this.lvDatas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -113,6 +100,29 @@ public class AgendamentoDataActivity extends AppCompatActivity {
                 // Toast.makeText(getApplicationContext(), "Nome: " + dis.getNome() + "\n" + "Especialiade: " + dis.getProfissao(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void buscar(View v) {
+        JSONObject parametro = new JSONObject();
+        JSONObject j_resposta = new JSONObject();
+
+        parametro = new JSONObject();
+        List<String> aux = new ArrayList<>();
+        try {
+            parametro.put("token", Invoker.token);
+
+            parametro.put("id_medico", medicoID);
+            parametro.put("data_inicio", etDataVerificar.getText().toString());// Ex: 2016-11-28
+            j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/disponibilidade", parametro.toString()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        //Atualiza o ListView
+        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, aux);
+        lvDatas.setAdapter(adapter);
     }
 
     private void mostrarMensagem(String msg) {
