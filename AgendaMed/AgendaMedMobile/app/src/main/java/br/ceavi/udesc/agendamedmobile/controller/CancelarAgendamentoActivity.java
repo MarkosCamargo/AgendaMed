@@ -2,6 +2,7 @@ package br.ceavi.udesc.agendamedmobile.controller;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -15,13 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ceavi.udesc.agendamedmobile.R;
+import br.ceavi.udesc.agendamedmobile.model.Agenda;
 import br.ceavi.udesc.agendamedmobile.model.PostoSaude;
 import br.ceavi.udesc.agendamedmobile.util.Invoker;
 
 public class CancelarAgendamentoActivity extends AppCompatActivity {
     private ListView lvAgendamentos;
-    public List<Object> agendamentos = new ArrayList<>();
-    private ArrayAdapter<Object> adapter;
+    public List<Agenda> agendamentos = new ArrayList<>();
+    private ArrayAdapter<Agenda> adapter;
     private Button btnCancelar;
 
 
@@ -32,6 +34,7 @@ public class CancelarAgendamentoActivity extends AppCompatActivity {
         try {
             JSONObject parametro = new JSONObject();
             parametro.put("token", Invoker.token);
+            parametro.put("id_usuario", Invoker.id);
             JSONObject j_resposta = new JSONObject(Invoker.executeGet(Invoker.baseUrlAgenda + "agenda/lista", parametro.toString()));//id do usuario
             System.out.print(j_resposta.toString());
         } catch (JSONException e) {
@@ -48,9 +51,18 @@ public class CancelarAgendamentoActivity extends AppCompatActivity {
 
         this.lvAgendamentos = (ListView) findViewById(R.id.lvAgendamentos);
         this.btnCancelar = (Button) findViewById(R.id.btnCancelar);
+        this.btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mostrarMensagem("Vc clicou");
+            }
+        });
 
-        this.adapter = new ArrayAdapter<Object>(this, android.R.layout.simple_list_item_1, agendamentos);
+
+        this.adapter = new ArrayAdapter<Agenda>(this, android.R.layout.simple_list_item_1, agendamentos);
         lvAgendamentos.setAdapter(adapter);
+
+
 
     }
 

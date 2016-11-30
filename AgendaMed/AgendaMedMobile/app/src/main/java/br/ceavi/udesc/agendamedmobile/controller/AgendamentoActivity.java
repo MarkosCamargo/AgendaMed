@@ -56,7 +56,7 @@ public class AgendamentoActivity extends AppCompatActivity {
                         JSONArray h = j.getJSONObject(i).getJSONArray("horas");
                         for (int ii = 0; ii < h.length(); ii++) {
                             String[] mudarOrdem = j.getJSONObject(i).getString("date").split("-");
-                            datas.add(j.getJSONObject(i).get("id_horario") + " - " + mudarOrdem[2] + "/" + mudarOrdem[1] + "/" + mudarOrdem[0] + " - " + h.get(ii));
+                            datas.add(j.getJSONObject(i).get("id_horario") + "-" + mudarOrdem[2] + "/" + mudarOrdem[1] + "/" + mudarOrdem[0] + "-" + h.get(ii));
                         }
                     }
                 }
@@ -78,12 +78,13 @@ public class AgendamentoActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String medico = (String) listViewDatas.getItemAtPosition(position);
+                mostrarMensagem(medico);
                 //idMedico = medico.getId();
                 String[] coleta = medico.split("-");
                 idHorario = Integer.parseInt(coleta[0]);
                 data = coleta[1];
                 hora = coleta[2];
-                mostrarMensagem("Selecionado");
+
                 // Toast.makeText(getApplicationContext(), "Nome: " + dis.getNome() + "\n" + "Especialiade: " + dis.getProfissao(), Toast.LENGTH_SHORT).show();
 
             }
@@ -92,7 +93,7 @@ public class AgendamentoActivity extends AppCompatActivity {
         this.btnConfirmar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // confirma(v);
+                confirma(v);
             }
         });
 
@@ -100,7 +101,7 @@ public class AgendamentoActivity extends AppCompatActivity {
 
     private void confirma(View v) {
         try {
-            String[] mudarOrdem = data.split("-");
+            String[] mudarOrdem = data.split("/");
             //"2016-11-28"
             data = mudarOrdem[2] + "-" + mudarOrdem[1] + "-" + mudarOrdem[0];
 
@@ -123,7 +124,7 @@ public class AgendamentoActivity extends AppCompatActivity {
             j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/insere", parametro.toString()));
             if (j_resposta.has("id")) {
                 mostrarMensagem("Horário Solicitado com sucesso!!");
-            }else{
+            } else {
                 mostrarMensagem("acho q deu merda");
             }
         } catch (JSONException e) {

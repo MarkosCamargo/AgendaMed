@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ceavi.udesc.agendamedmobile.R;
+import br.ceavi.udesc.agendamedmobile.model.Agenda;
 import br.ceavi.udesc.agendamedmobile.util.Invoker;
 
 public class HistoricoActivity extends AppCompatActivity {
     private ListView lvHistorico;
-    public List<Object> agendamentos = new ArrayList<>();
-    private ArrayAdapter<Object> adapter;
+    public List<Agenda> agendamentos = new ArrayList<>();
+    private ArrayAdapter<Agenda> adapter;
 
 
     @Override
@@ -30,6 +31,7 @@ public class HistoricoActivity extends AppCompatActivity {
         try {
             JSONObject parametro = new JSONObject();
             parametro.put("token", Invoker.token);
+            parametro.put("id_usuario", Invoker.id);
             JSONObject j_resposta = new JSONObject(Invoker.executeGet(Invoker.baseUrlAgenda + "agenda/lista", parametro.toString()));//listar as consultas de um usuario
             System.out.print(j_resposta.toString());
         } catch (JSONException e) {
@@ -45,7 +47,7 @@ public class HistoricoActivity extends AppCompatActivity {
         }
 
         this.lvHistorico = (ListView) findViewById(R.id.lvAgendamentos);
-        this.adapter = new ArrayAdapter<Object>(this, android.R.layout.simple_list_item_1, agendamentos);
+        this.adapter = new ArrayAdapter<Agenda>(this, android.R.layout.simple_list_item_1, agendamentos);
         lvHistorico.setAdapter(adapter);
 
     }
