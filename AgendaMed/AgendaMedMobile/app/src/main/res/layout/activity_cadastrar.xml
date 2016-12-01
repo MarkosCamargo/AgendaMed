@@ -84,7 +84,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="textEmailAddress"
         android:ems="10"
         android:hint="Email"
         android:id="@+id/etEmailCad"
@@ -94,7 +94,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="date"
         android:ems="10"
         android:hint="Data Nascimento"
         android:id="@+id/etNasCad"
@@ -104,7 +104,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="number"
         android:ems="10"
         android:hint="Número Sus"
         android:id="@+id/etSusCad"

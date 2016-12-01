@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 import br.ceavi.udesc.agendamedmobile.R;
+import br.ceavi.udesc.agendamedmobile.util.CryptUtils;
 import br.ceavi.udesc.agendamedmobile.util.Invoker;
 import br.ceavi.udesc.agendamedmobile.util.Md5Utils;
 
@@ -60,6 +61,7 @@ public class CadastrarActivity extends AppCompatActivity {
             if (etSenhaCad.getText().toString().equals(etSenha2Cad.getText().toString())) {
                 // criando usuario
                 JSONObject parametro = new JSONObject();
+                JSONObject j_resposta;
                 try {
                     parametro.put("login", etUsuarioCad.getText().toString());
                     // a senha deve ser enviada criptografada (md5 de preferência)
@@ -67,10 +69,19 @@ public class CadastrarActivity extends AppCompatActivity {
                     parametro.put("mobile", "true");
                     parametro.put("email", etEmailCad.getText().toString());
                     // sucesso se login não existir
-                    JSONObject j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "cria_usuario", parametro.toString()));
+                    j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "cria_usuario", parametro.toString()));
+
+                    parametro = new JSONObject();
+                    parametro.put("login", etUsuarioCad.getText().toString());
+                    parametro.put("senha", Md5Utils.toMd5(etSenhaCad.getText().toString()));
+                    System.out.println(parametro.toString());
+                    j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "autentica_mobile", parametro.toString()));
+
+                    System.out.println(j_resposta.toString());
                     //tring resposta =
-                    if(j_resposta.has("id_usuario")) {
-                        int id = j_resposta.getInt("id_usuario");
+                    if(j_resposta.has("token")) {
+                        Invoker.token = j_resposta.getString("token");
+                        int id = j_resposta.getInt("id");
 
                         //Criando o Paciente
                         parametro = new JSONObject();
@@ -82,7 +93,8 @@ public class CadastrarActivity extends AppCompatActivity {
                         parametroEndereco.put("latitude", 0);
                         parametroEndereco.put("longitude", 0);
 
-                        parametro.put("descricao", etNomeCad.getText().toString());
+                        parametro.put("token", Invoker.token);
+                        parametro.put("nome", etNomeCad.getText().toString());
                         parametro.put("numero_sus", etSusCad.getText().toString());
                         parametro.put("id_usuario", id);
                         parametro.put("endereco", parametroEndereco);

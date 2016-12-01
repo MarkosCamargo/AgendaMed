@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import br.ceavi.udesc.agendamedmobile.R;
+import br.ceavi.udesc.agendamedmobile.util.CryptUtils;
 import br.ceavi.udesc.agendamedmobile.util.Invoker;
 import br.ceavi.udesc.agendamedmobile.util.Md5Utils;
 
@@ -30,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 //        if (android.os.Build.VERSION.SDK_INT > 9) {
+      //  System.out.println(CryptUtils.decrypt(Invoker.token));
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 //        }

@@ -1,5 +1,7 @@
 package br.ceavi.udesc.agendamedmobile.controller;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import br.ceavi.udesc.agendamedmobile.model.PostoSaude;
 import br.ceavi.udesc.agendamedmobile.util.Invoker;
 
 public class AgendamentoDataActivity extends AppCompatActivity {
+    AlertDialog.Builder dialog = null;
     private ListView lvDatas;
     private EditText etDataVerificar;
     private Button btnBuscarDisponibilidade;
@@ -97,6 +100,8 @@ public class AgendamentoDataActivity extends AppCompatActivity {
                 idHorario = Integer.parseInt(coleta[0]);
                 data = coleta[1];
                 hora = coleta[2];
+
+                criaDialog(view);
                 // Toast.makeText(getApplicationContext(), "Nome: " + dis.getNome() + "\n" + "Especialiade: " + dis.getProfissao(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -111,9 +116,29 @@ public class AgendamentoDataActivity extends AppCompatActivity {
         try {
             parametro.put("token", Invoker.token);
 
+            data = etDataVerificar.getText().toString();
+            String[] mudarOrdem1 = data.split("/");
+            //"2016-11-28"
+            data = mudarOrdem1[2] + "-" + mudarOrdem1[1] + "-" + mudarOrdem1[0];
+
             parametro.put("id_medico", medicoID);
-            parametro.put("data_inicio", etDataVerificar.getText().toString());// Ex: 2016-11-28
+            parametro.put("data_inicio", data);// Ex: 2016-11-28
             j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/disponibilidade", parametro.toString()));
+            if (j_resposta.has("itens")) {
+                JSONArray j = j_resposta.getJSONArray("itens");
+                for (int i = 0; i < j.length(); i++) {
+//                    datas.add(j.getJSONObject(i).getString("date"));
+                    if (j.getJSONObject(i).has("horas")) {
+                        JSONArray h = j.getJSONObject(i).getJSONArray("horas");
+                        for (int ii = 0; ii < h.length(); ii++) {
+                            String[] mudarOrdem = j.getJSONObject(i).getString("date").split("-");
+                            aux.add(j.getJSONObject(i).get("id_horario") + "-" + mudarOrdem[2] + "/" + mudarOrdem[1] + "/" + mudarOrdem[0] + "-" + h.get(ii));
+                        }
+                    }
+                }
+            } else {
+                mostrarMensagem("Este Médico não possui HORÁRIOS");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -127,5 +152,65 @@ public class AgendamentoDataActivity extends AppCompatActivity {
 
     private void mostrarMensagem(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void criaDialog(View view) {
+        dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Aviso");
+        dialog.setMessage("deseja agendar neste horario?");
+        dialog.setNegativeButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                confirma(null);
+
+            }
+        });
+        dialog.setPositiveButton("Nao", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+              //dialog.cancel();
+            }
+        });
+        dialog.setCancelable(false);
+        dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        dialog.create();
+        dialog.show();
+    }
+
+
+    private void confirma(View v) {
+        try {
+            String[] mudarOrdem = data.split("/");
+            //"2016-11-28"
+            data = mudarOrdem[2] + "-" + mudarOrdem[1] + "-" + mudarOrdem[0];
+
+            JSONObject parametro;
+            JSONObject j_resposta;
+
+            parametro = new JSONObject();
+//if (has("id_paciente"))
+            parametro.put("token", Invoker.token);
+            parametro.put("data", data);
+            parametro.put("hora", hora);
+            parametro.put("id_horario", idHorario);
+            parametro.put("id_usuario", Invoker.id);
+            parametro.put("situacao", 1);
+//    SOLICITADO(1),
+//    AGENDADO(2),
+//    CANCELADO(3),
+//    ATENDIDO(4),;
+
+            j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/insere", parametro.toString()));
+            if (j_resposta.has("id")) {
+                mostrarMensagem("Horário Solicitado com sucesso!!");
+            } else {
+                mostrarMensagem("acho q deu merda");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }
