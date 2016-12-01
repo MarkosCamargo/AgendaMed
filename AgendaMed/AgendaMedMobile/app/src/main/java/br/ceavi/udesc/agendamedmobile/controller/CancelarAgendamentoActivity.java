@@ -114,25 +114,29 @@ public class CancelarAgendamentoActivity extends AppCompatActivity {
 
     private void cancelar(View v) {
         try {
-            JSONObject parametro = new JSONObject();
-            JSONObject j_resposta;
-            parametro.put("token", Invoker.token);
-            parametro.put("id", idAgendamento);
-            parametro.put("situacao", 3);//cancelado
-            //parametro.put("data_inicio", "2016-11-28");
-            j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/altera", parametro.toString()));
+            if(idAgendamento!=0) {
+                JSONObject parametro = new JSONObject();
+                JSONObject j_resposta;
+                parametro.put("token", Invoker.token);
+                parametro.put("id", idAgendamento);
+                parametro.put("situacao", 3);//cancelado
+                //parametro.put("data_inicio", "2016-11-28");
+                j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/altera", parametro.toString()));
 
-            List<Agenda> aux = agendamentos;
-            for (int i = 0; i < aux.size(); i++) {
-                if (aux.get(i).getId() == idAgendamento) {
-                    //adapter.notifyDataSetChanged();
-                    aux.get(i).setSituacao("Cancelado");
+                List<Agenda> aux = agendamentos;
+                for (int i = 0; i < aux.size(); i++) {
+                    if (aux.get(i).getId() == idAgendamento) {
+                        //adapter.notifyDataSetChanged();
+                        aux.get(i).setSituacao("Cancelado");
+                    }
                 }
+                //Atualiza o ListView
+                adapter = new ArrayAdapter<Agenda>(this, android.R.layout.simple_list_item_1, aux);
+                lvAgendamentos.setAdapter(adapter);
+                mostrarMensagem("Cancelado com Sucesso!");
+            }else{
+                mostrarMensagem("Selecione um para cancelar");
             }
-            //Atualiza o ListView
-            adapter = new ArrayAdapter<Agenda>(this, android.R.layout.simple_list_item_1, aux);
-            lvAgendamentos.setAdapter(adapter);
-            mostrarMensagem("Cancelado com Sucesso!");
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

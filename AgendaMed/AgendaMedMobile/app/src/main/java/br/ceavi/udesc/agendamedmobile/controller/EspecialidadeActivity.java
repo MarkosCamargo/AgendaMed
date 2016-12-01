@@ -115,21 +115,28 @@ public class EspecialidadeActivity extends AppCompatActivity {
         dialog.setNegativeButton("Por Data", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               //mostrarMensagem("Implementar isso!!");
-                Intent intent = new Intent(EspecialidadeActivity.this, AgendamentoDataActivity.class);
-                //finish();
-                intent.putExtra("medicoID", idMedico);
-                startActivity(intent);
-
+                //mostrarMensagem("Implementar isso!!");
+                if (idMedico != 0) {
+                    Intent intent = new Intent(EspecialidadeActivity.this, AgendamentoDataActivity.class);
+                    //finish();
+                    intent.putExtra("medicoID", idMedico);
+                    startActivity(intent);
+                } else {
+                    mostrarMensagem("Selecione uma especialidade");
+                }
             }
         });
         dialog.setPositiveButton("Por Data Mais Proxima", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(EspecialidadeActivity.this, AgendamentoActivity.class);
-                //finish();
-                intent.putExtra("medicoID", idMedico);
-                startActivity(intent);
+                if (idMedico != 0) {
+                    Intent intent = new Intent(EspecialidadeActivity.this, AgendamentoActivity.class);
+                    //finish();
+                    intent.putExtra("medicoID", idMedico);
+                    startActivity(intent);
+                } else {
+                    mostrarMensagem("Selecione uma especialidade");
+                }
             }
         });
         dialog.setCancelable(false);

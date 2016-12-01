@@ -26,7 +26,7 @@ public class AgendamentoActivity extends AppCompatActivity {
     private ListView listViewDatas;
     private Button btnConfirmar;
     private List<String> datas = new ArrayList<>();
-    int idHorario;
+    int idHorario = 0;
     String data;
     String hora;
 
@@ -100,37 +100,45 @@ public class AgendamentoActivity extends AppCompatActivity {
     }
 
     private void confirma(View v) {
-        try {
-            String[] mudarOrdem = data.split("/");
-            //"2016-11-28"
-            data = mudarOrdem[2] + "-" + mudarOrdem[1] + "-" + mudarOrdem[0];
+        if (idHorario != 0) {
+            try {
+                String[] mudarOrdem = data.split("/");
+                //"2016-11-28"
+                data = mudarOrdem[2] + "-" + mudarOrdem[1] + "-" + mudarOrdem[0];
 
-            JSONObject parametro;
-            JSONObject j_resposta;
+                JSONObject parametro;
+                JSONObject j_resposta;
 
-            parametro = new JSONObject();
+                parametro = new JSONObject();
 //if (has("id_paciente"))
-            parametro.put("token", Invoker.token);
-            parametro.put("data", data);
-            parametro.put("hora", hora);
-            parametro.put("id_horario", idHorario);
-            parametro.put("id_usuario", Invoker.id);
-            parametro.put("situacao", 1);
+                parametro.put("token", Invoker.token);
+                parametro.put("data", data);
+                parametro.put("hora", hora);
+                parametro.put("id_horario", idHorario);
+                parametro.put("id_usuario", Invoker.id);
+                parametro.put("situacao", 1);
 //    SOLICITADO(1),
 //    AGENDADO(2),
 //    CANCELADO(3),
 //    ATENDIDO(4),;
 
-            j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/insere", parametro.toString()));
-            if (j_resposta.has("id")) {
-                mostrarMensagem("Horário Solicitado com sucesso!!");
-            } else {
-                mostrarMensagem("acho q deu merda");
+                j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/insere", parametro.toString()));
+                if (j_resposta.has("id")) {
+                    mostrarMensagem("Horário Solicitado com sucesso!!");
+                    Intent intent = new Intent(this, OpcoesActivity.class);
+                    finish();
+                    startActivity(intent);
+                } else {
+                    mostrarMensagem("acho q deu merda");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } else {
+            mostrarMensagem("Selecione um Horario para agendar");
+
         }
     }
 

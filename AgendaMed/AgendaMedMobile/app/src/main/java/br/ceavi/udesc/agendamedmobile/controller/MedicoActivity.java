@@ -29,7 +29,7 @@ public class MedicoActivity extends AppCompatActivity {
     private ListView listViewMedicos;
     private Button btnAgendar;
     private List<Medico> medicos = new ArrayList<>();
-    int idMedico=0;
+    int idMedico = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class MedicoActivity extends AppCompatActivity {
             postoID = intent.getIntExtra("postoID", postoID);
         }
 
-        System.out.println("ID POSTO: "+postoID);
+        System.out.println("ID POSTO: " + postoID);
         JSONObject parametro = new JSONObject();
 
         try {
@@ -49,12 +49,12 @@ public class MedicoActivity extends AppCompatActivity {
             parametro.put("id_posto_saude", postoID);
             JSONObject j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "medico/lista", parametro.toString()));
             System.out.println(j_resposta.toString());
-            if(j_resposta.has("itens")) {
+            if (j_resposta.has("itens")) {
                 JSONArray j = j_resposta.getJSONArray("itens");
                 for (int i = 0; i < j.length(); i++) {
                     medicos.add(new Medico(j.getJSONObject(i).getString("crm"), j.getJSONObject(i).getInt("id"), j.getJSONObject(i).getString("nome")));
                 }
-            }else{
+            } else {
                 mostrarMensagem("Este posto não possui médicos");
             }
         } catch (JSONException e) {
@@ -103,22 +103,31 @@ public class MedicoActivity extends AppCompatActivity {
         dialog.setNegativeButton("Por Data", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (idMedico != 0) {
 //                mostrarMensagem("Implementar isso!!");
-                Intent intent = new Intent(MedicoActivity.this, AgendamentoDataActivity.class);
-                //finish();
-                intent.putExtra("medicoID", idMedico);
-                startActivity(intent);
+                    Intent intent = new Intent(MedicoActivity.this, AgendamentoDataActivity.class);
+                    //finish();
+                    intent.putExtra("medicoID", idMedico);
+                    startActivity(intent);
+                } else {
+                    mostrarMensagem("Selecione um Médico");
 
+                }
 
             }
         });
         dialog.setPositiveButton("Por Data Mais Proxima", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(MedicoActivity.this, AgendamentoActivity.class);
-                //finish();
-                intent.putExtra("medicoID", idMedico);
-                startActivity(intent);
+                if (idMedico != 0) {
+                    Intent intent = new Intent(MedicoActivity.this, AgendamentoActivity.class);
+                    //finish();
+                    intent.putExtra("medicoID", idMedico);
+                    startActivity(intent);
+                } else {
+                    mostrarMensagem("Selecione um Médico");
+
+                }
             }
         });
         dialog.setCancelable(false);

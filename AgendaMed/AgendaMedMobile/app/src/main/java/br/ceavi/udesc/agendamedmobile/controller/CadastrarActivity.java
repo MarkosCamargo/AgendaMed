@@ -58,69 +58,86 @@ public class CadastrarActivity extends AppCompatActivity {
         if (verificaCamposNulos()) {
             mostrarMensagem("Existem Campos em branco!");
         } else {
-            if (etSenhaCad.getText().toString().equals(etSenha2Cad.getText().toString())) {
-                // criando usuario
-                JSONObject parametro = new JSONObject();
-                JSONObject j_resposta;
-                try {
-                    parametro.put("login", etUsuarioCad.getText().toString());
-                    // a senha deve ser enviada criptografada (md5 de preferência)
-                    parametro.put("senha", Md5Utils.toMd5(etSenhaCad.getText().toString()));
-                    parametro.put("mobile", "true");
-                    parametro.put("email", etEmailCad.getText().toString());
-                    // sucesso se login não existir
-                    j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "cria_usuario", parametro.toString()));
+            String data = etNasCad.getText().toString();
+            String[] mudarOrdem1 = data.split("/");
+            try {
+                data = mudarOrdem1[2] + "-" + mudarOrdem1[1] + "-" + mudarOrdem1[0];
+                if (mudarOrdem1[2].length() == 4 && (mudarOrdem1[1].length() == 2 && Integer.parseInt(mudarOrdem1[1]) <= 12) && (mudarOrdem1[0].length() == 2 && Integer.parseInt(mudarOrdem1[0]) <= 31)) {
+                    if (etSenhaCad.getText().toString().equals(etSenha2Cad.getText().toString())) {
+                        // criando usuario
+                        JSONObject parametro = new JSONObject();
+                        JSONObject j_resposta;
+                        try {
+                            parametro.put("login", etUsuarioCad.getText().toString());
+                            // a senha deve ser enviada criptografada (md5 de preferência)
+                            parametro.put("senha", Md5Utils.toMd5(etSenhaCad.getText().toString()));
+                            parametro.put("mobile", "true");
+                            parametro.put("email", etEmailCad.getText().toString());
+                            // sucesso se login não existir
+                            j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "cria_usuario", parametro.toString()));
 
-                    parametro = new JSONObject();
-                    parametro.put("login", etUsuarioCad.getText().toString());
-                    parametro.put("senha", Md5Utils.toMd5(etSenhaCad.getText().toString()));
-                    System.out.println(parametro.toString());
-                    j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "autentica_mobile", parametro.toString()));
+                            parametro = new JSONObject();
+                            parametro.put("login", etUsuarioCad.getText().toString());
+                            parametro.put("senha", Md5Utils.toMd5(etSenhaCad.getText().toString()));
+                            System.out.println(parametro.toString());
+                            j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAuth + "autentica_mobile", parametro.toString()));
 
-                    System.out.println(j_resposta.toString());
-                    //tring resposta =
-                    if(j_resposta.has("token")) {
-                        Invoker.token = j_resposta.getString("token");
-                        int id = j_resposta.getInt("id");
+                            System.out.println(j_resposta.toString());
+                            //tring resposta =
+                            if (j_resposta.has("token")) {
+                                Invoker.token = j_resposta.getString("token");
+                                int id = j_resposta.getInt("id");
 
-                        //Criando o Paciente
-                        parametro = new JSONObject();
-                        //Criando o Endereco
-                        JSONObject parametroEndereco = new JSONObject();
+                                //Criando o Paciente
+                                parametro = new JSONObject();
+                                //Criando o Endereco
+                                JSONObject parametroEndereco = new JSONObject();
 
-                        parametroEndereco.put("id", 0);
-                        parametroEndereco.put("descricao", etEnderecoCad.getText().toString());
-                        parametroEndereco.put("latitude", 0);
-                        parametroEndereco.put("longitude", 0);
+                                parametroEndereco.put("id", 0);
+                                parametroEndereco.put("descricao", etEnderecoCad.getText().toString());
+                                parametroEndereco.put("latitude", 0);
+                                parametroEndereco.put("longitude", 0);
 
-                        parametro.put("token", Invoker.token);
-                        parametro.put("nome", etNomeCad.getText().toString());
-                        parametro.put("numero_sus", etSusCad.getText().toString());
-                        parametro.put("id_usuario", id);
-                        parametro.put("endereco", parametroEndereco);
-                        parametro.put("nascimento", etNasCad.getText().toString());
+                                parametro.put("token", Invoker.token);
+                                parametro.put("nome", etNomeCad.getText().toString());
+                                parametro.put("numero_sus", etSusCad.getText().toString());
+                                parametro.put("id_usuario", id);
+                                parametro.put("endereco", parametroEndereco);
 
-
-                        j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "paciente/insere", parametro.toString()));
+                                parametro.put("nascimento", data);
 
 
-                        mostrarMensagem(j_resposta.toString());
-                    }else{
-                        mostrarMensagem(j_resposta.toString());
+                                j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "paciente/insere", parametro.toString()));
+
+                                if (j_resposta.has("id")) {
+                                    mostrarMensagem("Conta criada com sucesso!!");
+                                    Intent intent = new Intent(this, LoginActivity.class);
+                                    finish();
+                                    startActivity(intent);
+
+                                } else {
+                                    mostrarMensagem(j_resposta.getString("mensagem"));
+                                }
+                            } else {
+                                mostrarMensagem(j_resposta.toString());
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        mostrarMensagem("As senhas não são iguais!");
+
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                Intent intent = new Intent(this, LoginActivity.class);
-                finish();
-                startActivity(intent);
-            } else {
-                mostrarMensagem("As senhas não são iguais!");
-
+                } else
+                    mostrarMensagem("A data informada é invalida");
+            } catch (ArrayIndexOutOfBoundsException e) {
+                mostrarMensagem("A data informada é invalida");
+                e.printStackTrace();
             }
-
         }
 
     }

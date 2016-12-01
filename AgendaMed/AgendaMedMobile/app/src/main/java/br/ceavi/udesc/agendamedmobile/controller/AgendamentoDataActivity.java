@@ -120,28 +120,34 @@ public class AgendamentoDataActivity extends AppCompatActivity {
             String[] mudarOrdem1 = data.split("/");
             //"2016-11-28"
             data = mudarOrdem1[2] + "-" + mudarOrdem1[1] + "-" + mudarOrdem1[0];
-
-            parametro.put("id_medico", medicoID);
-            parametro.put("data_inicio", data);// Ex: 2016-11-28
-            j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/disponibilidade", parametro.toString()));
-            if (j_resposta.has("itens")) {
-                JSONArray j = j_resposta.getJSONArray("itens");
-                for (int i = 0; i < j.length(); i++) {
+            if (mudarOrdem1[2].length() == 4 && (mudarOrdem1[1].length() == 2 && Integer.parseInt(mudarOrdem1[1]) <= 12) && (mudarOrdem1[0].length() == 2 && Integer.parseInt(mudarOrdem1[0]) <= 31)) {
+                parametro.put("id_medico", medicoID);
+                parametro.put("data_inicio", data);// Ex: 2016-11-28
+                j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/disponibilidade", parametro.toString()));
+                if (j_resposta.has("itens")) {
+                    JSONArray j = j_resposta.getJSONArray("itens");
+                    for (int i = 0; i < j.length(); i++) {
 //                    datas.add(j.getJSONObject(i).getString("date"));
-                    if (j.getJSONObject(i).has("horas")) {
-                        JSONArray h = j.getJSONObject(i).getJSONArray("horas");
-                        for (int ii = 0; ii < h.length(); ii++) {
-                            String[] mudarOrdem = j.getJSONObject(i).getString("date").split("-");
-                            aux.add(j.getJSONObject(i).get("id_horario") + "-" + mudarOrdem[2] + "/" + mudarOrdem[1] + "/" + mudarOrdem[0] + "-" + h.get(ii));
+                        if (j.getJSONObject(i).has("horas")) {
+                            JSONArray h = j.getJSONObject(i).getJSONArray("horas");
+                            for (int ii = 0; ii < h.length(); ii++) {
+                                String[] mudarOrdem = j.getJSONObject(i).getString("date").split("-");
+                                aux.add(j.getJSONObject(i).get("id_horario") + "-" + mudarOrdem[2] + "/" + mudarOrdem[1] + "/" + mudarOrdem[0] + "-" + h.get(ii));
+                            }
                         }
                     }
+                } else {
+                    mostrarMensagem("Este Médico não possui HORÁRIOS");
                 }
             } else {
-                mostrarMensagem("Este Médico não possui HORÁRIOS");
+                mostrarMensagem("A data informada é invalida");
             }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ArrayIndexOutOfBoundsException e) {
+            mostrarMensagem("A data informada é invalida");
             e.printStackTrace();
         }
 
@@ -169,7 +175,7 @@ public class AgendamentoDataActivity extends AppCompatActivity {
         dialog.setPositiveButton("Nao", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-              //dialog.cancel();
+                //dialog.cancel();
             }
         });
         dialog.setCancelable(false);
@@ -204,6 +210,9 @@ public class AgendamentoDataActivity extends AppCompatActivity {
             j_resposta = new JSONObject(Invoker.executePost(Invoker.baseUrlAgenda + "agenda/insere", parametro.toString()));
             if (j_resposta.has("id")) {
                 mostrarMensagem("Horário Solicitado com sucesso!!");
+                Intent intent = new Intent(this, OpcoesActivity.class);
+                finish();
+                startActivity(intent);
             } else {
                 mostrarMensagem("acho q deu merda");
             }
