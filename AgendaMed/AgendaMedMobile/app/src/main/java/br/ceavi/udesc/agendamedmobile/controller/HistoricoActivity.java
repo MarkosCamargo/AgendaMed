@@ -59,7 +59,8 @@ public class HistoricoActivity extends AppCompatActivity {
                             break;
                     }
                     //(String data, String hora, int id, String situacao, String nomePosto) {
-                    agendamentos.add(new Agenda(j.getJSONObject(i).getString("data"), j.getJSONObject(i).getString("hora"), j.getJSONObject(i).getInt("id"), situacao, j.getJSONObject(i).getJSONObject("horario").getJSONObject("posto_saude").getString("nome")));
+                    String[] mudarOrdem = j.getJSONObject(i).getString("data").split("-");
+                    agendamentos.add(new Agenda(mudarOrdem[2] + "/" + mudarOrdem[1] + "/" + mudarOrdem[0], j.getJSONObject(i).getString("hora"), j.getJSONObject(i).getInt("id"), situacao, j.getJSONObject(i).getJSONObject("horario").getJSONObject("posto_saude").getString("nome")));
                 }
 
             }

@@ -79,7 +79,7 @@ public class PostoActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PostoSaude dis = (PostoSaude) lvPostos.getItemAtPosition(position);
-                mostrarMensagem(dis.getNome() +", ID: " +dis.getId() + " Selecionado");
+                //mostrarMensagem(dis.getNome() +", ID: " +dis.getId() + " Selecionado");
 
                 //exibir uma dialog se o paciente quer procurar os medicos pelo nome ou pelas especialiades
                 //mostrar os medicos deste posto para o paciente para realizar um agendamento

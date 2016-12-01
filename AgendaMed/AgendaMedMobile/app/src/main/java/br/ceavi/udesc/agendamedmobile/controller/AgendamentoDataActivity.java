@@ -94,7 +94,7 @@ public class AgendamentoDataActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String medico = (String) lvDatas.getItemAtPosition(position);
-                mostrarMensagem(medico);
+                //mostrarMensagem(medico);
                 //idMedico = medico.getId();
                 String[] coleta = medico.split("-");
                 idHorario = Integer.parseInt(coleta[0]);

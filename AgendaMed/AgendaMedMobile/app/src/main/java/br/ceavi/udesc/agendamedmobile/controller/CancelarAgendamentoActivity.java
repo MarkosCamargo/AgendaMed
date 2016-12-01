@@ -62,7 +62,8 @@ public class CancelarAgendamentoActivity extends AppCompatActivity {
                             break;
                     }
                     //(String data, String hora, int id, String situacao, String nomePosto) {
-                    agendamentos.add(new Agenda(j.getJSONObject(i).getString("data"), j.getJSONObject(i).getString("hora"), j.getJSONObject(i).getInt("id"), situacao, j.getJSONObject(i).getJSONObject("horario").getJSONObject("posto_saude").getString("nome")));
+                    String[] mudarOrdem = j.getJSONObject(i).getString("data").split("-");
+                    agendamentos.add(new Agenda(mudarOrdem[2] + "/" + mudarOrdem[1] + "/" + mudarOrdem[0], j.getJSONObject(i).getString("hora"), j.getJSONObject(i).getInt("id"), situacao, j.getJSONObject(i).getJSONObject("horario").getJSONObject("posto_saude").getString("nome")));
                 }
 
             }
@@ -99,13 +100,9 @@ public class CancelarAgendamentoActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Agenda medico = (Agenda) lvAgendamentos.getItemAtPosition(position);
-                mostrarMensagem(medico.toString());
+                //mostrarMensagem(medico.toString());
 
                 idAgendamento = medico.getId();
-
-
-                // Toast.makeText(getApplicationContext(), "Nome: " + dis.getNome() + "\n" + "Especialiade: " + dis.getProfissao(), Toast.LENGTH_SHORT).show();
-
             }
         });
 
@@ -114,7 +111,7 @@ public class CancelarAgendamentoActivity extends AppCompatActivity {
 
     private void cancelar(View v) {
         try {
-            if(idAgendamento!=0) {
+            if (idAgendamento != 0) {
                 JSONObject parametro = new JSONObject();
                 JSONObject j_resposta;
                 parametro.put("token", Invoker.token);
@@ -134,7 +131,7 @@ public class CancelarAgendamentoActivity extends AppCompatActivity {
                 adapter = new ArrayAdapter<Agenda>(this, android.R.layout.simple_list_item_1, aux);
                 lvAgendamentos.setAdapter(adapter);
                 mostrarMensagem("Cancelado com Sucesso!");
-            }else{
+            } else {
                 mostrarMensagem("Selecione um para cancelar");
             }
         } catch (JSONException e) {
